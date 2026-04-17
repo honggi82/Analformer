@@ -1,0 +1,15 @@
+torch
+torchvision
+torchaudio
+mne==1.9.0
+mne-connectivity
+einops
+torchsummary
+scikit-learn
+seaborn
+mat73
+h5py
+matplotlib
+numpy
+opencv-python
+scipy
