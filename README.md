@@ -1,130 +1,83 @@
-Code will be shown after the publication.
-
-
 # Analformer: Transformer for both analysis and prediction
 
-This repository contains the official PyTorch implementation of **Analformer**, a Transformer-based model designed for electroencephalography (EEG) signal classification. The model leverages an analytical patch embedding strategy using fixed Morlet wavelets to create interpretable and physiologically relevant input for a standard Transformer encoder.
+Analformer is a novel Transformer-based architecture designed for high-accuracy brain-computer interface (BCI) prediction while maintaining inherent neuroscientific interpretability. Unlike traditional "black box" deep learning models, Analformer bridges the gap between performance and explainability, allowing researchers to verify whether predictions are based on genuine neural activity.
 
-## ✨ Overview
+## Key Innovation: Analytical Patch Embedding
 
-Analformer is designed to address the unique challenges of EEG data by:
+The core of Analformer is its **Analytical Patch Embedding** module. It utilizes fixed, non-trainable **Morlet wavelet kernels** to extract explainable spatio-temporal-frequency features from raw EEG signals. 
 
-1.  **Analytical Feature Extraction**: Instead of a fully learned embedding, it uses a non-trainable convolutional layer with Morlet wavelet kernels to extract robust time-frequency features. This reduces the number of trainable parameters and grounds the model in established signal processing techniques.
-2.  **Interpretability**: The model is built for analysis. It allows for easy visualization of intermediate features, attention maps, and their neurophysiological implications (e.g., connectivity, topography).
-3.  **Two-Phase Training**: The framework includes a pre-training phase on data from all subjects, followed by a subject-specific fine-tuning phase to achieve high performance in motor imagery (MI) and other EEG-based classification tasks.
+This unique structure enables:
+- **Direct Interpretation**: Direct, model-based generation of standard neurophysiological analyses (time-frequency, topography, and FTF analysis).
+- **Functional Connectivity**: Inference of attention-based functional connectivity by analyzing the Transformer's attention mechanism applied to interpretable features.
+- **Trustworthy AI**: Verification of model predictions against established neuroscientific findings.
 
-## 📂 Project Structure
+---
 
-The project is organized into several modular files for clarity and maintainability:
+## Technical Requirements (Prerequisites)
 
+To run the research notebooks, ensure you have the following environment set up:
+
+### System Requirements
+- Python 3.8+
+- PyTorch (CUDA supported version recommended, e.g., CU121)
+- GPU with 8GB+ VRAM (for efficient training)
+
+### Required Libraries
+```bash
+pip install torch torchvision torchaudio
+pip install mne==1.9.0 mne-connectivity
+pip install einops torchsummary scikit-learn seaborn mat73 h5py
 ```
-analformer/
-├── main.py             # 🚀 Main script: Configure parameters and run the experiment
-├── model.py            # 🏛️ Model: Defines the Analformer PyTorch model architecture
-├── engine.py           # ⚙️ Engine: Contains the training, evaluation, and analysis logic
-├── utils.py            # 🛠️ Utilities: Includes visualization and other helper functions
-└── requirements.txt    # 📋 Dependency list
-```
 
-## 🏛️ Model Architecture
+---
 
-The model consists of three main components, all defined in `model.py`:
+## Repository Structure
 
-1.  **AnalyticalPatchEmbedding**: Processes raw EEG signals to create input patch sequences for the Transformer. It uses a temporal convolution with fixed **Morlet wavelets** to extract time-frequency features.
-2.  **Transformer Encoder**: A standard stack of Transformer blocks that learns relationships between patches via multi-head self-attention.
-3.  **Classification Head**: A simple Multi-Layer Perceptron (MLP) head that performs classification based on the final representation from the Transformer.
+This repository contains the following **refactored research notebooks** optimized for production and sharing:
 
-## ⚙️ Installation
+- `clean_conformer_model_finetuning_down_250_K_MI_v18_F-value_att_ch_1_anal.ipynb`: 
+    - Focused on **Motor Imagery (MI)** paradigm with 62-channel OpenBCI data.
+- `clean_conformer_model_finetuning_down_250_K_ERP_v18_F-value_att_ch_1_anal.ipynb`: 
+    - Specialized for **Event-Related Potential (ERP)** analysis.
+- `clean_conformer_model_finetuning_down_250_K_SSVEP_v18_F-value_att_ch_1_anal.ipynb`: 
+    - Optimized for **SSVEP** classification and analysis.
+- `clean_conformer_finetuning_comp4_2a_v18_F-value_att_ch_1_anal.ipynb`: 
+    - Implementation for the **BCI Competition IV 2a** dataset (22-channel).
 
-To get started, clone the repository and set up the required environment.
+---
 
-1.  **Clone the repository:**
+## Data Preparation
 
-    ```bash
-    git clone https://github.com/your-username/analformer.git
-    cd analformer
-    ```
+The notebooks expect dataset paths to be configured in the `params` dictionary within the `main()` function.
 
-2.  **Create and activate a virtual environment (recommended):**
+1. **Dataset format**: `.mat` (HDF5 compatible) files.
+2. **Channel Layout**: 
+    - 62 channels for OpenBCI datasets.
+    - 22 channels for BCI Competition 2a.
+3. **Sampling Rate**: Resampled to 250Hz.
 
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-    ```
+---
 
-3.  **Install the dependencies from `requirements.txt`:**
+## How to Use
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+1. **Configure Parameters**: Open the desired notebook and locate the `params` dictionary in the `main()` function. Update the `"root"` path to your local data directory.
+2. **Pre-training**: Execute the `Pretraining(params)` phase to train the model on multi-subject data.
+3. **Fine-tuning**: Run the `Finetuning_and_Evaluation(...)` phase for subject-specific adaptation and performance evaluation.
+4. **Neurophysiological Analysis**: Setting `"anal": 1` in `params` will trigger the automatic generation of:
+    - **Time-Frequency Maps** (Morlet Wavelet)
+    - **F-value Topographies**
+    - **Attention-based Topographies**
+    - **Functional Connectivity Graphs**
 
-    > **Note**: Your system may require a specific PyTorch version depending on your CUDA installation. If you encounter issues, please install PyTorch separately first by following the [official instructions](https://pytorch.org/get-started/locally/).
+---
 
-## 📊 Dataset
+## Reference
 
-The code is configured to work with the **BCI Competition IV 2a dataset**.
+If you use this code or work in your research, please refer to the following paper:
 
-  * **File Structure**: The script expects the data files to be located in the directory specified in `main.py`:
+> **Analformer: Transformer for both analysis and prediction**  
+> Hong Gi Yeom, Woo Sung Choi, and Kyung-min An.  
+> *Scientific Reports* (2025).
 
-    ```
-    /path/to/your/dataset/
-    ├── A01T.mat
-    ├── A01E.mat
-    ├── ...
-    └── A09T.mat
-    └── A09E.mat
-    ```
-
-  * **`.mat` File Content**: Each `.mat` file (e.g., `A01T.mat`) must contain two specific variables:
-
-      * **`data`**: A 3D array containing the EEG signals. The dimensions must be `(channels, timepoints, trials)`.
-      * **`label`**: A 2D array for the corresponding labels. The dimensions must be `(trials, classes)`, and the labels must be **one-hot encoded**.
-
-## 🚀 Usage
-
-The entire experiment is controlled and launched from `main.py`.
-
-1.  **Configure Parameters**: Open **`main.py`** and modify the `params` dictionary. The most critical parameter to set is the path to your dataset:
-
-    ```python
-    # Inside main.py
-    params = {
-        # --- Data and Path Configuration ---
-        "root": "/path/to/your/dataset/", # IMPORTANT: Update this path
-        # ... other parameters for training and model architecture
-    }
-    ```
-
-2.  **Run the script**:
-    Execute `main.py` from your terminal. The modular structure is handled by Python's import system, so you only need to run this single file.
-
-    ```bash
-    python main.py
-    ```
-
-    The script will automatically perform:
-
-      - **Phase 1**: Pre-training the model (logic in `engine.py`).
-      - **Phase 2**: Fine-tuning and evaluating the model for each subject (logic in `engine.py`).
-
-## 📈 Outputs
-
-The script will create a `results/` directory inside your specified `root` path.
-
-  - **Log Files**: `log_subject{n}.txt` for each subject's epoch-by-epoch results and a summary log file.
-  - **Saved Models**: `pretrained_analformer.pth` and `model_sub{n}_best.pth` for each subject.
-  - **Visualizations**: If `anal: 1` is set, various analysis plots (attention maps, t-SNE) will be saved. All visualization functions are located in `utils.py`.
-
-## 📄 Citation
-If you use this code or the Analformer model in your research, please cite our paper:
-
-@article{Yeom_2025_Analformer,
-  title={Analformer: Transformer for both analysis and prediction},
-  author={Hong Gi Yeom, Woo Sung Choi, and Kyung-min An},
-  journal={in progress},
-  year={2025}
-}
-
-## 📜 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+---
+*Note: All notebooks have been refactored for readability and shared research use. The core class names have been updated to `Analformer` and `analytical_patch_embedding` to reflect the latest research nomenclature.*
