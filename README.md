@@ -21,7 +21,7 @@ Analformer was evaluated on public EEG datasets covering four decoding settings:
 
 The core idea is to preserve interpretable EEG structure during embedding. Fixed Morlet wavelet filters extract spatio-temporal-frequency features, the Transformer encoder learns relationships between these features, and the classification head predicts the target BCI class. Analysis outputs are produced from the model's internal representations and attention weights.
 
-![Overall Analformer architecture](figures/Fig6.png)
+![Graphical abstract of Analformer](figures/Graphical_abstract.png)
 
 ## Repository Structure
 
@@ -29,7 +29,8 @@ The core idea is to preserve interpretable EEG structure during embedding. Fixed
 - `Analformer_OpenBMI_MI.ipynb`: OpenBMI Motor Imagery implementation.
 - `Analformer_OpenBMI_ERP.ipynb`: OpenBMI ERP implementation.
 - `Analformer_OpenBMI_SSVEP.ipynb`: OpenBMI SSVEP implementation.
-- `figures/Fig1.png` - `figures/Fig7.png`: Main explanatory figures from the paper.
+- `figures/Graphical_abstract.png`: Graphical abstract of Analformer.
+- `figures/Fig4.png`, `figures/Fig5.png`, `figures/Fig7.png`: Analysis result examples from the paper.
 - `requirements.txt`: Python package dependencies used by the notebooks.
 
 ## Technical Requirements
@@ -81,18 +82,14 @@ The code assumes 250 Hz EEG data. The OpenBMI notebooks use 62 channels, while t
 
 For the OpenBMI notebooks, `Pretraining(params)` is executed before subject-specific fine-tuning. In the BCI Competition IV 2a notebook, the current workflow uses a pretrained checkpoint path when skipping pre-training; update `pretrained_path` before running that notebook.
 
-## Figures
+## Analysis Result Examples
 
-The following figures summarize the model and representative analysis outputs from the paper.
+The following figures show representative analysis result examples from the paper.
 
 | Figure | Description |
 | --- | --- |
-| ![Fig1](figures/Fig1.png) | MI topography analysis for BCI Competition IV 2a and OpenBMI, showing ERD patterns and F-value maps over motor areas. |
-| ![Fig2](figures/Fig2.png) | Whole-channel time-frequency analysis for OpenBMI MI, highlighting alpha/beta ERD around motor cortex channels. |
-| ![Fig3](figures/Fig3.png) | FTF analysis for OpenBMI SSVEP, showing stimulus-frequency and harmonic responses concentrated in occipital regions. |
 | ![Fig4](figures/Fig4.png) | Attention-based functional connectivity for BCI Competition IV 2a MI classes. |
 | ![Fig5](figures/Fig5.png) | Accuracy comparison across Transformer encoder depths and attention head counts. |
-| ![Fig6](figures/Fig6.png) | Overall architecture of Analformer. |
 | ![Fig7](figures/Fig7.png) | Wavelet convolution and AnalNet analysis pipeline. |
 
 ## Citation
