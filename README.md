@@ -1,4 +1,4 @@
-# Analformer: Transformer for EEG Decoding and Neuroscientific Analysis
+# Analformer: A novel transformer architecture for EEG decoding and neuroscientific analysis
 
 This repository provides the official implementation of the Scientific Reports article:
 
