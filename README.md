@@ -88,9 +88,9 @@ The following figures show representative analysis result examples from the pape
 
 | Figure | Description |
 | --- | --- |
-| ![Fig4](figures/Fig4.png) | Attention-based functional connectivity for BCI Competition IV 2a MI classes. |
-| ![Fig5](figures/Fig5.png) | Accuracy comparison across Transformer encoder depths and attention head counts. |
-| ![Fig7](figures/Fig7.png) | Wavelet convolution and AnalNet analysis pipeline. |
+| ![Fig4](figures/Fig4.png) | Topography analysis during the Motor Imagery (MI) task. |
+| ![Fig5](figures/Fig5.png) | Whole-channel time-frequency analysis during the Motor Imagery (MI) task for Dataset II. |
+| ![Fig7](figures/Fig7.png) | Attention-based Functional Connectivity analysis for the four Motor Imagery (MI) tasks in Dataset I. |
 
 ## Citation
 
