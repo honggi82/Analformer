@@ -108,7 +108,9 @@ If you use this code, please cite:
 
 ## Acknowledgements
 
-This work was supported by research fund from Chosun University. During code development, we referred to the excellent [EEG-Conformer](https://github.com/eeyhsong/EEG-conformer) repository, and we thank its authors for making their implementation publicly available.
+This work was supported by research fund from Chosun University.
+
+Parts of this implementation were developed with reference to the [EEG-Conformer](https://github.com/eeyhsong/EEG-Conformer) repository, which is distributed under the GPL-3.0 license. We thank the authors for making their implementation publicly available.
 
 ## License
 
