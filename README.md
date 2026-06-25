@@ -1,83 +1,118 @@
-# Analformer: Transformer for both analysis and prediction
+# Analformer: Transformer for EEG Decoding and Neuroscientific Analysis
 
-Analformer is a novel Transformer-based architecture designed for high-accuracy brain-computer interface (BCI) prediction while maintaining inherent neuroscientific interpretability. Unlike traditional "black box" deep learning models, Analformer bridges the gap between performance and explainability, allowing researchers to verify whether predictions are based on genuine neural activity.
+This repository provides the official implementation of the Scientific Reports article:
 
-## Key Innovation: Analytical Patch Embedding
+**A novel transformer architecture for EEG decoding and neuroscientific analysis**
 
-The core of Analformer is its **Analytical Patch Embedding** module. It utilizes fixed, non-trainable **Morlet wavelet kernels** to extract explainable spatio-temporal-frequency features from raw EEG signals. 
+Hong Gi Yeom, Woo Sung Choi, and Kyung-min An, *Scientific Reports* (2026).
 
-This unique structure enables:
-- **Direct Interpretation**: Direct, model-based generation of standard neurophysiological analyses (time-frequency, topography, and FTF analysis).
-- **Functional Connectivity**: Inference of attention-based functional connectivity by analyzing the Transformer's attention mechanism applied to interpretable features.
-- **Trustworthy AI**: Verification of model predictions against established neuroscientific findings.
+DOI: [10.1038/s41598-026-56405-9](https://www.nature.com/articles/s41598-026-56405-9)
 
----
+Analformer is a Transformer-based architecture designed to support both high-performance brain-computer interface (BCI) decoding and interpretable neuroscientific analysis. The model uses fixed, non-trainable Morlet wavelet kernels in an Analytical Patch Embedding module so that intermediate representations can be analyzed with familiar EEG analysis tools such as time-frequency maps, topographies, F-value time-frequency (FTF) analysis, and attention-based functional connectivity.
 
-## Technical Requirements (Prerequisites)
+## Overview
 
-To run the research notebooks, ensure you have the following environment set up:
+Analformer was evaluated on public EEG datasets covering four decoding settings:
 
-### System Requirements
-- Python 3.8+
-- PyTorch (CUDA supported version recommended, e.g., CU121)
-- GPU with 8GB+ VRAM (for efficient training)
+- **BCI Competition IV 2a**: four-class Motor Imagery (MI)
+- **OpenBMI MI**: two-class Motor Imagery
+- **OpenBMI ERP**: two-class event-related potential decoding
+- **OpenBMI SSVEP**: four-class steady-state visually evoked potential decoding
 
-### Required Libraries
-```bash
-pip install torch torchvision torchaudio
-pip install mne==1.9.0 mne-connectivity
-pip install einops torchsummary scikit-learn seaborn mat73 h5py
-```
+The core idea is to preserve interpretable EEG structure during embedding. Fixed Morlet wavelet filters extract spatio-temporal-frequency features, the Transformer encoder learns relationships between these features, and the classification head predicts the target BCI class. Analysis outputs are produced from the model's internal representations and attention weights.
 
----
+![Overall Analformer architecture](figures/Fig6.png)
 
 ## Repository Structure
 
-This repository contains the following **refactored research notebooks** optimized for production and sharing:
+- `Analformer_BCI_Comp_4_2a.ipynb`: BCI Competition IV 2a Motor Imagery implementation.
+- `Analformer_OpenBMI_MI.ipynb`: OpenBMI Motor Imagery implementation.
+- `Analformer_OpenBMI_ERP.ipynb`: OpenBMI ERP implementation.
+- `Analformer_OpenBMI_SSVEP.ipynb`: OpenBMI SSVEP implementation.
+- `figures/Fig1.png` - `figures/Fig7.png`: Main explanatory figures from the paper.
+- `requirements.txt`: Python package dependencies used by the notebooks.
 
-- `clean_conformer_model_finetuning_down_250_K_MI_v18_F-value_att_ch_1_anal.ipynb`: 
-    - Focused on **Motor Imagery (MI)** paradigm with 62-channel OpenBCI data.
-- `clean_conformer_model_finetuning_down_250_K_ERP_v18_F-value_att_ch_1_anal.ipynb`: 
-    - Specialized for **Event-Related Potential (ERP)** analysis.
-- `clean_conformer_model_finetuning_down_250_K_SSVEP_v18_F-value_att_ch_1_anal.ipynb`: 
-    - Optimized for **SSVEP** classification and analysis.
-- `clean_conformer_finetuning_comp4_2a_v18_F-value_att_ch_1_anal.ipynb`: 
-    - Implementation for the **BCI Competition IV 2a** dataset (22-channel).
+## Technical Requirements
 
----
+Python 3.9+ is recommended. A CUDA-enabled PyTorch installation is recommended for training.
+
+Install PyTorch first according to your CUDA environment. For example:
+
+```bash
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+```
+
+Then install the remaining dependencies:
+
+```bash
+pip install -r requirements.txt
+```
 
 ## Data Preparation
 
-The notebooks expect dataset paths to be configured in the `params` dictionary within the `main()` function.
+The datasets are not included in this repository. Please download the public datasets from their original sources:
 
-1. **Dataset format**: `.mat` (HDF5 compatible) files.
-2. **Channel Layout**: 
-    - 62 channels for OpenBCI datasets.
-    - 22 channels for BCI Competition 2a.
-3. **Sampling Rate**: Resampled to 250Hz.
+- BCI Competition IV 2a: [http://www.bbci.de/competition/iv](http://www.bbci.de/competition/iv)
+- OpenBMI: [https://gigadb.org/dataset/100542](https://gigadb.org/dataset/100542)
 
----
+Each notebook expects HDF5-compatible `.mat` files with `data` and `label` arrays. The notebooks load subject files using the following naming pattern:
+
+- Training files: `A1T.mat`, `A2T.mat`, ...
+- Evaluation files: `A1E.mat`, `A2E.mat`, ...
+
+Set the dataset folder in the `params` dictionary inside `main()`:
+
+```python
+params = {
+    "root": "Enter your dataset folder/",
+    ...
+}
+```
+
+The code assumes 250 Hz EEG data. The OpenBMI notebooks use 62 channels, while the BCI Competition IV 2a notebook uses 22 channels.
 
 ## How to Use
 
-1. **Configure Parameters**: Open the desired notebook and locate the `params` dictionary in the `main()` function. Update the `"root"` path to your local data directory.
-2. **Pre-training**: Execute the `Pretraining(params)` phase to train the model on multi-subject data.
-3. **Fine-tuning**: Run the `Finetuning_and_Evaluation(...)` phase for subject-specific adaptation and performance evaluation.
-4. **Neurophysiological Analysis**: Setting `"anal": 1` in `params` will trigger the automatic generation of:
-    - **Time-Frequency Maps** (Morlet Wavelet)
-    - **F-value Topographies**
-    - **Attention-based Topographies**
-    - **Functional Connectivity Graphs**
+1. Open the notebook for the dataset/paradigm you want to run.
+2. Update `"root"` in the `params` dictionary to your local dataset folder.
+3. Check the key experiment parameters such as `n_ch`, `n_classes`, `time`, `baseline_sec`, `pretrain_epochs`, `finetuning_epochs`, `depth`, `num_heads`, and `att_ch`.
+4. Run the notebook cells in order.
+5. Use `"anal": 1` to generate analysis outputs, including time-frequency maps, topographies, F-value maps, and attention-based connectivity visualizations.
 
----
+For the OpenBMI notebooks, `Pretraining(params)` is executed before subject-specific fine-tuning. In the BCI Competition IV 2a notebook, the current workflow uses a pretrained checkpoint path when skipping pre-training; update `pretrained_path` before running that notebook.
 
-## Reference
+## Figures
 
-If you use this code or work in your research, please refer to the following paper:
+The following figures summarize the model and representative analysis outputs from the paper.
 
-> **Analformer: Transformer for both analysis and prediction**  
-> Hong Gi Yeom, Woo Sung Choi, and Kyung-min An.  
-> *Scientific Reports* (2025).
+| Figure | Description |
+| --- | --- |
+| ![Fig1](figures/Fig1.png) | MI topography analysis for BCI Competition IV 2a and OpenBMI, showing ERD patterns and F-value maps over motor areas. |
+| ![Fig2](figures/Fig2.png) | Whole-channel time-frequency analysis for OpenBMI MI, highlighting alpha/beta ERD around motor cortex channels. |
+| ![Fig3](figures/Fig3.png) | FTF analysis for OpenBMI SSVEP, showing stimulus-frequency and harmonic responses concentrated in occipital regions. |
+| ![Fig4](figures/Fig4.png) | Attention-based functional connectivity for BCI Competition IV 2a MI classes. |
+| ![Fig5](figures/Fig5.png) | Accuracy comparison across Transformer encoder depths and attention head counts. |
+| ![Fig6](figures/Fig6.png) | Overall architecture of Analformer. |
+| ![Fig7](figures/Fig7.png) | Wavelet convolution and AnalNet analysis pipeline. |
 
----
-*Note: All notebooks have been refactored for readability and shared research use. The core class names have been updated to `Analformer` and `analytical_patch_embedding` to reflect the latest research nomenclature.*
+## Citation
+
+If you use this code, please cite:
+
+```bibtex
+@article{yeom2026analformer,
+  title = {A novel transformer architecture for EEG decoding and neuroscientific analysis},
+  author = {Yeom, Hong Gi and Choi, Woo Sung and An, Kyung-min},
+  journal = {Scientific Reports},
+  year = {2026},
+  doi = {10.1038/s41598-026-56405-9}
+}
+```
+
+## Acknowledgements
+
+This work was supported by research fund from Chosun University. During code development, we referred to the excellent [EEG-Conformer](https://github.com/eeyhsong/EEG-conformer) repository, and we thank its authors for making their implementation publicly available.
+
+## License
+
+The source code is distributed under the license in `LICENSE`. The paper figures are reproduced here only to explain the official implementation; please refer to the [article page](https://www.nature.com/articles/s41598-026-56405-9) for publication details and figure licensing information.
