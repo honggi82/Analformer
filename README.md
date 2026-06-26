@@ -1,16 +1,15 @@
 # Analformer: A novel transformer architecture for EEG decoding and neuroscientific analysis
 
 <div align="center">
-  <!-- Keep these links. Translations will automatically update with the README. -->
-  <a href="https://github.com/honggi82/Analformer">English</a> |
-  <a href="https://www.readme-i18n.com/honggi82/Analformer?lang=de">Deutsch</a> |
-  <a href="https://www.readme-i18n.com/honggi82/Analformer?lang=es">Español</a> |
-  <a href="https://www.readme-i18n.com/honggi82/Analformer?lang=fr">français</a> |
-  <a href="https://www.readme-i18n.com/honggi82/Analformer?lang=ja">日本語</a> |
-  <a href="https://www.readme-i18n.com/honggi82/Analformer?lang=ko">한국어</a> |
-  <a href="https://www.readme-i18n.com/honggi82/Analformer?lang=pt">Português</a> |
-  <a href="https://www.readme-i18n.com/honggi82/Analformer?lang=ru">Русский</a> |
-  <a href="https://www.readme-i18n.com/honggi82/Analformer?lang=zh">中文</a>
+  <a href="README.md"><strong>English</strong></a> |
+  <a href="README.de.md">Deutsch</a> |
+  <a href="README.es.md">Español</a> |
+  <a href="README.fr.md">français</a> |
+  <a href="README.ja.md">日本語</a> |
+  <a href="README.ko.md">한국어</a> |
+  <a href="README.pt.md">Português</a> |
+  <a href="README.ru.md">Русский</a> |
+  <a href="README.zh.md">中文</a>
 </div>
 
 This repository provides the official implementation of the Scientific Reports article:
